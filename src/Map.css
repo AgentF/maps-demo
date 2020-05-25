@@ -1,0 +1,132 @@
+button {
+  cursor: pointer;
+  /*rgba(0, 0, 0, 0.3) 0px 1px var4px -1px*/
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.map-container {
+  --panelWidth: 220px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.panel-button {
+  position: absolute;
+  top: 1rem;
+  left: calc(1rem + calc(var(--panelWidth) * var(--showButton)));
+  z-index: 1;
+  background-color: var(--backgroundColor);
+  border: var(--border);
+  color: var(--color);
+  border-radius: var(--borderRadius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.panel-button > .material-icons {
+  font-size: 2rem;
+}
+
+.left-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header-title {
+  color: var(--color);
+}
+
+.panel-header-button {
+  background-color: var(--backgroundColor);
+  border: var(--border);
+  border-radius: var(--borderRadius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25rem;
+}
+
+.panel-header-button > .material-icons {
+  font-size: 2rem;
+}
+
+.marker-on {
+  color: #ea4335;
+}
+
+.marker-off {
+  color: #333;
+}
+
+.left-panel {
+  --padding: 1rem;
+  position: absolute;
+  padding: var(--padding);
+  height: calc(100% - 2px - var(--padding) * 2);
+  width: calc(var(--panelWidth) - 2px - var(--padding) * 2 * var(--showButton));
+  background-color: var(--backgroundColor);
+  border: var(--border);
+  border-radius: 0 var(--borderRadius) var(--borderRadius) 0;
+  z-index: 1;
+  overflow: auto;
+}
+
+.left-panel > *:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.markers-display {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.markers-display > *:not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+
+.marker-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.marker-button {
+  background-color: var(--backgroundColor);
+  border: var(--border);
+  color: #1a73e8;
+  border-radius: var(--borderRadius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.marker-options {
+  display: flex;
+}
+
+.marker-option {
+  background-color: var(--backgroundColor);
+  border: var(--border);
+  color: #333;
+  border-radius: var(--borderRadius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.marker-option .material-icons {
+  font-size: 1.5rem;
+}
