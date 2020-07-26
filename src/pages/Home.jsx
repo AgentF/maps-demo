@@ -1,4 +1,4 @@
 import React from 'react';
-import { Map } from '../containers/Map';
+import { MapComponent } from '../components/Map/index';
 
-export const Home = () => <Map />;
+export const Home = () => <MapComponent />;

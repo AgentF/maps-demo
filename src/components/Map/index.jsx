@@ -1,12 +1,10 @@
 /* global google */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { MarkersIndicator } from '../MarkersIndicator/index';
 import { MapWrapper, Map } from './styles';
 
 const MapComponent = ({ data: { center, zoom, markers } }) => {
   const [googleMarkers, setGoogleMarkers] = useState([]);
-  const [showMarkers, setShowMarkers] = useState(true);
   const mapElement = useRef(true);
   const map = useRef(true);
 
@@ -31,32 +29,33 @@ const MapComponent = ({ data: { center, zoom, markers } }) => {
       markers.forEach(({ position, title }) => {
         const newGoogleMarkersArray = googleMarkers;
         const googleMarker = new google.maps.Marker({ position, title });
-        if (showMarkers) {
-          googleMarker.setMap(map.current);
-        }
+        // if (showMarkers) {
+        //   googleMarker.setMap(map.current);
+        // }
         newGoogleMarkersArray.push(googleMarker);
         setGoogleMarkers(newGoogleMarkersArray);
       });
+
+      const recursive = () => {
+        const button = document.querySelector(`button.dismissButton`);
+        if (button) {
+          button.click();
+        } else {
+          recursive();
+        }
+      };
+      setTimeout(recursive, 5 * 1000);
     };
   }, []);
 
-  useEffect(() => {
-    googleMarkers.forEach((googleMarker) => {
-      googleMarker.setMap(showMarkers ? map.current : null);
-    });
-  }, [showMarkers]);
+  // useEffect(() => {
+  //   googleMarkers.forEach((googleMarker) => {
+  //     googleMarker.setMap(showMarkers ? map.current : null);
+  //   });
+  // }, [showMarkers]);
 
   return (
     <MapWrapper>
-      <MarkersIndicator
-        markers={markers}
-        showMarkers={showMarkers}
-        setShowMarkersHandler={(newShowMarkers) => {
-          setShowMarkers(newShowMarkers);
-        }}
-        setCenterHandler={(newPosition) => map.current.setCenter(newPosition)}
-        setZoomHandler={(newZoom) => map.current.setZoom(newZoom)}
-      />
       <Map ref={mapElement} />
     </MapWrapper>
   );
@@ -65,22 +64,30 @@ const MapComponent = ({ data: { center, zoom, markers } }) => {
 MapComponent.propTypes = {
   data: PropTypes.shape({
     center: PropTypes.shape({
-      lat: PropTypes.number.isRequired,
-      lng: PropTypes.number.isRequired,
-    }).isRequired,
-    zoom: PropTypes.number.isRequired,
+      lat: PropTypes.number,
+      lng: PropTypes.number,
+    }),
+    zoom: PropTypes.number,
     markers: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        id: PropTypes.number,
         position: PropTypes.shape({
-          lat: PropTypes.number.isRequired,
-          lng: PropTypes.number.isRequired,
-        }).isRequired,
-        title: PropTypes.string.isRequired,
-        visible: PropTypes.bool.isRequired,
+          lat: PropTypes.number,
+          lng: PropTypes.number,
+        }),
+        title: PropTypes.string,
+        visible: PropTypes.bool,
       }),
-    ).isRequired,
-  }).isRequired,
+    ),
+  }),
+};
+
+MapComponent.defaultProps = {
+  data: {
+    center: { lat: 0, lng: 0 },
+    zoom: 6,
+    markers: [],
+  },
 };
 
 export { MapComponent };

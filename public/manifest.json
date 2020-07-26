@@ -3,7 +3,7 @@
   "name": "Maps Demo",
   "icons": [
     {
-      "src": "icon512x512byFlatIcon.png",
+      "src": "icon512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdLocationOn, MdLocationOff } from 'react-icons/md';
 import { BsCaretRightFill } from 'react-icons/bs';
+import { MdLocationOn, MdLocationOff } from 'react-icons/md';
 import {
-  Panel,
   Header,
   Title,
   MarkersToggleButton,
@@ -20,56 +19,63 @@ const MarkersIndicator = ({
   setShowMarkersHandler,
   setCenterHandler,
   setZoomHandler,
-}) => (
-  <Panel>
-    <Header>
-      <Title>Markers</Title>
-      <MarkersToggleButton
-        type="button"
-        title={`${showMarkers ? 'Hide' : 'Show'} All`}
-        onClick={() => setShowMarkersHandler(!showMarkers)}
-      >
-        {showMarkers ? <MdLocationOff /> : <MdLocationOn />}
-      </MarkersToggleButton>
-    </Header>
-    <MarkersList>
-      {markers.map(({ title, position }) => (
-        <Marker>
-          <Name>{title}</Name>
-          <OptionsWrapper>
-            <Option
-              type="button"
-              title="Go"
-              onClick={() => {
-                setCenterHandler(position);
-                setZoomHandler(10);
-              }}
-            >
-              <BsCaretRightFill />
-            </Option>
-          </OptionsWrapper>
-        </Marker>
-      ))}
-    </MarkersList>
-  </Panel>
-);
+}) => {
+  return (
+    <>
+      <Header>
+        <Title>Markers</Title>
+        <MarkersToggleButton
+          type="button"
+          title={`${showMarkers ? 'Hide' : 'Show'} All`}
+          onClick={() => setShowMarkersHandler(!showMarkers)}
+        >
+          {showMarkers ? <MdLocationOff /> : <MdLocationOn />}
+        </MarkersToggleButton>
+      </Header>
+      <MarkersList>
+        {markers.map(({ title, position }) => (
+          <Marker>
+            <Name>{title}</Name>
+            <OptionsWrapper>
+              <Option
+                type="button"
+                title="Go"
+                onClick={() => {
+                  setCenterHandler(position);
+                  setZoomHandler(10);
+                }}
+              >
+                <BsCaretRightFill />
+              </Option>
+            </OptionsWrapper>
+          </Marker>
+        ))}
+      </MarkersList>
+    </>
+  );
+};
 
 MarkersIndicator.propTypes = {
   markers: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.number,
       position: PropTypes.shape({
-        lat: PropTypes.number.isRequired,
-        lng: PropTypes.number.isRequired,
-      }).isRequired,
-      title: PropTypes.string.isRequired,
-      visible: PropTypes.bool.isRequired,
+        lat: PropTypes.number,
+        lng: PropTypes.number,
+      }),
+      title: PropTypes.string,
+      visible: PropTypes.bool,
     }),
-  ).isRequired,
-  showMarkers: PropTypes.bool.isRequired,
+  ),
+  showMarkers: PropTypes.bool,
   setShowMarkersHandler: PropTypes.func.isRequired,
   setCenterHandler: PropTypes.func.isRequired,
   setZoomHandler: PropTypes.func.isRequired,
+};
+
+MarkersIndicator.defaultProps = {
+  markers: [],
+  showMarkers: false,
 };
 
 export { MarkersIndicator };
