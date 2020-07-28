@@ -19,7 +19,7 @@ export const Panel = styled.div`
   z-index: 1;
 
   @media (min-width: 600px) {
-    width: 350px;
+    width: ${({ showPanel }) => (showPanel ? '300px' : '3rem')};
   }
 `;
 

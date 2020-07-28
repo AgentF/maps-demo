@@ -1,19 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
+import MapContext from '../../Contexts/MapContext';
 import { MapWrapper, Map } from './styles';
-import { MapHelper } from '../../helpers/MapHelper';
 
-const MapComponent = ({ data: { center, zoom } }) => {
+const MapComponent = () => {
+  const { initMap } = useContext(MapContext);
   const mapElement = useRef(null);
 
   useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    const helper = new MapHelper(
-      process.env.REACT_APP_MAPS_APIKEY,
-      mapElement.current,
-      center,
-      zoom,
-    );
+    initMap(mapElement.current);
   }, []);
 
   return (

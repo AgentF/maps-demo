@@ -2,5 +2,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RouterManager } from './RouterManager';
+import { MapProvider } from './Contexts/MapContext';
 
-ReactDOM.render(<RouterManager />, document.getElementById('root'));
+ReactDOM.render(
+  <MapProvider>
+    <RouterManager />
+  </MapProvider>,
+  document.getElementById('root'),
+);

@@ -33,20 +33,23 @@ export const MarkersList = styled.ul`
   }
 `;
 
-export const OptionsWrapper = styled.div`
-  display: flex;
-`;
-
-export const Name = styled.h4``;
-
 export const Marker = styled.li`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 0.25rem;
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
   }
+`;
+
+export const Name = styled.h4``;
+
+export const Position = styled.span``;
+
+export const OptionsWrapper = styled.div`
+  display: flex;
+  align-self: flex-end;
 `;
 
 export const Option = styled(IconButton)`
@@ -54,5 +57,6 @@ export const Option = styled(IconButton)`
     --size: 1.5rem;
     height: var(--size);
     width: var(--size);
+    color: #ea4335;
   }
 `;

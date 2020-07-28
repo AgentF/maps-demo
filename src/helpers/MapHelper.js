@@ -2,7 +2,19 @@
 import { guidGenerator } from './functions';
 
 export class MapHelper {
-  constructor(apikey, mapElement, center, zoom) {
+  constructor(
+    apikey,
+    mapElement,
+    center,
+    setCenter,
+    zoom,
+    setZoom,
+    addMarker,
+    removeMarker,
+  ) {
+    this.zoom = zoom;
+    this.center = center;
+
     // Create the script tag, set the appropriate attributes
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${apikey}&callback=initMap`;
@@ -12,21 +24,23 @@ export class MapHelper {
     // Attach your callback function to the `window` object
     window.initMap = () => {
       this.map = new google.maps.Map(mapElement, {
-        center,
-        zoom,
+        center: this.center,
+        zoom: this.zoom,
       });
 
-      this.map.addListener('click', (e) => this.addMarker(e));
+      this.map.addListener('click', (e) =>
+        this.addMarker(e, addMarker, removeMarker, setCenter, setZoom),
+      );
 
       this.distanceMatrixService = new google.maps.DistanceMatrixService();
 
-      setTimeout(() => this.tryGeolocation(this.map), 5 * 1000);
+      setTimeout(() => this.tryGeolocation(setCenter), 2 * 1000);
     };
 
     // Append the 'script' element to 'head'
     document.head.appendChild(script);
 
-    this.markers = [];
+    this.internalMarkers = [];
   }
 
   handleGeolocationError(browserHasGeolocation, infoWindow, position) {
@@ -39,7 +53,7 @@ export class MapHelper {
     infoWindow.open(this.map);
   }
 
-  tryGeolocation() {
+  tryGeolocation(setCenter) {
     const infoWindow = new google.maps.InfoWindow();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -52,7 +66,8 @@ export class MapHelper {
           infoWindow.setPosition(position);
           infoWindow.setContent('Location found.');
           // infoWindow.open(this.map);
-          this.map.setCenter(position);
+          this.setCenter(position);
+          setCenter(position);
         },
         () => {
           this.handleGeolocationError(true, infoWindow, this.map.getCenter());
@@ -64,7 +79,7 @@ export class MapHelper {
     }
   }
 
-  addMarker({ latLng }) {
+  addMarker({ latLng }, addMarker, removeMarker, setCenter, setZoom) {
     const internalId = guidGenerator();
 
     let marker = new google.maps.Marker({
@@ -76,31 +91,44 @@ export class MapHelper {
     });
 
     marker.addListener('click', () => {
-      this.map.setZoom(8);
-      this.map.setCenter(marker.getPosition());
+      const markerLatLng = marker.getPosition();
+      const newCenter = { lat: markerLatLng.lat(), lng: markerLatLng.lng() };
+
+      this.setCenter(newCenter);
+      setCenter(newCenter);
+
+      const newZoom = 8;
+      this.setZoom(newZoom);
+      setZoom(newZoom);
     });
 
     marker.addListener('rightclick', () => {
       marker.setMap(null);
       marker = null;
-      const markerIndex = this.markers.findIndex(
+      const markerIndex = this.internalMarkers.findIndex(
         (possibleMarker) => possibleMarker.internalId === internalId,
       );
       if (markerIndex) {
-        this.markers = [
-          ...this.markers.slice(0, markerIndex),
-          ...this.markers.slice(markerIndex + 1),
+        this.internalMarkers = [
+          ...this.internalMarkers.slice(0, markerIndex),
+          ...this.internalMarkers.slice(markerIndex + 1),
         ];
+        removeMarker(internalId);
       }
     });
 
-    if (this.markers.length > 4) {
-      this.getRoute();
-    }
+    this.internalMarkers = [...this.internalMarkers, marker];
+
+    const markerLatLng = marker.getPosition();
+
+    addMarker({
+      internalId,
+      position: { lat: markerLatLng.lat(), lng: markerLatLng.lng() },
+    });
   }
 
   getRoute() {
-    const route = this.markers.map((marker) => marker.getLocation());
+    const route = this.internalMarkers.map((marker) => marker.getLocation());
     this.distanceMatrixService.getDistanceMatrix(
       {
         origins: route.shift(),
@@ -110,5 +138,19 @@ export class MapHelper {
         return { response, status };
       },
     );
+  }
+
+  setCenter(center) {
+    if (this.center !== center) {
+      this.center = center;
+      this.map.setCenter(center);
+    }
+  }
+
+  setZoom(zoom) {
+    if (this.zoom !== zoom) {
+      this.zoom = zoom;
+      this.map.setZoom(zoom);
+    }
   }
 }

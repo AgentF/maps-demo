@@ -1,51 +1,40 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { BsCaretRightFill } from 'react-icons/bs';
-import { MdLocationOn, MdLocationOff } from 'react-icons/md';
+import React, { useContext } from 'react';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import MapContext from '../../Contexts/MapContext';
 import {
   Header,
   Title,
-  MarkersToggleButton,
   MarkersList,
+  Position,
   OptionsWrapper,
   Name,
   Marker,
   Option,
 } from './styles';
 
-const MarkersIndicator = ({
-  markers,
-  showMarkers,
-  setShowMarkersHandler,
-  setCenterHandler,
-  setZoomHandler,
-}) => {
+const MarkersIndicator = () => {
+  const { setCenter, setZoom, markers } = useContext(MapContext);
   return (
     <>
       <Header>
         <Title>Markers</Title>
-        <MarkersToggleButton
-          type="button"
-          title={`${showMarkers ? 'Hide' : 'Show'} All`}
-          onClick={() => setShowMarkersHandler(!showMarkers)}
-        >
-          {showMarkers ? <MdLocationOff /> : <MdLocationOn />}
-        </MarkersToggleButton>
       </Header>
       <MarkersList>
-        {markers.map(({ title, position }) => (
+        {markers.map(({ title, position, position: { lat, lng } }) => (
           <Marker>
-            <Name>{title}</Name>
+            {title && <Name>{title}</Name>}
+            <Position>{`LAT: ${lat}`}</Position>
+            <Position>{`LNG: ${lng}`}</Position>
             <OptionsWrapper>
               <Option
                 type="button"
                 title="Go"
                 onClick={() => {
-                  setCenterHandler(position);
-                  setZoomHandler(10);
+                  setCenter(position);
+                  setZoom(10);
                 }}
               >
-                <BsCaretRightFill />
+                <FaMapMarkerAlt />
               </Option>
             </OptionsWrapper>
           </Marker>
@@ -53,29 +42,6 @@ const MarkersIndicator = ({
       </MarkersList>
     </>
   );
-};
-
-MarkersIndicator.propTypes = {
-  markers: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      position: PropTypes.shape({
-        lat: PropTypes.number,
-        lng: PropTypes.number,
-      }),
-      title: PropTypes.string,
-      visible: PropTypes.bool,
-    }),
-  ),
-  showMarkers: PropTypes.bool,
-  setShowMarkersHandler: PropTypes.func.isRequired,
-  setCenterHandler: PropTypes.func.isRequired,
-  setZoomHandler: PropTypes.func.isRequired,
-};
-
-MarkersIndicator.defaultProps = {
-  markers: [],
-  showMarkers: false,
 };
 
 export { MarkersIndicator };
