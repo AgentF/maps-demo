@@ -17,6 +17,10 @@ export const Panel = styled.div`
   top: ${({ showPanel }) => (showPanel ? '0%' : 'calc(100% - var(--size))')};
   width: ${({ showPanel }) => (showPanel ? 'calc(100% - 1rem)' : '3rem')};
   z-index: 1;
+
+  @media (min-width: 600px) {
+    width: 350px;
+  }
 `;
 
 export const PanelToggle = styled(IconButton)`

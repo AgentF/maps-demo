@@ -1,24 +1,28 @@
-import React from 'react';
-import { Router } from '@reach/router';
+import React, { useState } from 'react';
+import { Router, navigate } from '@reach/router';
 import { GlobalStyle, Wrapper } from './styles/GlobalStyle';
+import { NotFound } from './pages/NotFound';
 import { Home } from './pages/Home';
-import { PanelComponent } from './components/Panel/index';
-import { MarkersIndicator } from './components/MarkersIndicator/index';
+import { Login } from './pages/Login';
 
 export const RouterManager = () => {
+  const [loggedIn, setLoggedIn] = useState(true);
+
   return (
     <Wrapper>
       <GlobalStyle />
-      <PanelComponent>
-        <MarkersIndicator
-          setShowMarkersHandler={(newShowMarkers) => newShowMarkers}
-          setCenterHandler={(newPosition) => newPosition}
-          setZoomHandler={(newZoom) => newZoom}
+      <Router basepath={process.env.PUBLIC_URL}>
+        <NotFound default />
+        <Home path="/" loggedIn={loggedIn} />
+        <Login
+          path="/login"
+          handleLoggedIn={(e) => {
+            if (e) {
+              navigate(process.env.PUBLIC_URL);
+            }
+            setLoggedIn(e);
+          }}
         />
-      </PanelComponent>
-
-      <Router basepath="/maps-demo/">
-        <Home path="/" />
       </Router>
     </Wrapper>
   );
